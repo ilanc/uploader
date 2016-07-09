@@ -35,6 +35,8 @@
          */
         defaults: {
 
+            existingInput: null,
+
             /**
              * The button to launch the file browser dialog.
              * Possible values: a jQuery selector/object or an HTMLElement.
@@ -279,13 +281,16 @@
          */
         createFileInput: function() {
 
-            // Create the file input
-            this.$fileInput = $("<input/>", {
-                name: this.options.name,
-                accept: (this.options.acceptType || []).join(),
-                type: "file"
-            }).appendTo(this.$selectButton);
-
+            if (this.options.existingInput) {
+                this.$fileInput = $(this.options.existingInput);
+            } else {
+                // Create the file input
+                this.$fileInput = $("<input/>", {
+                    name: this.options.name,
+                    accept: (this.options.acceptType || []).join(),
+                    type: "file"
+                }).appendTo(this.$selectButton);
+            }
             // Set the multiple attribute
             if (this.options.multiple && this.constructor.support.selectMultiple && this.isModernBrowser) {
                 this.$fileInput.attr("multiple", "multiple");
@@ -1199,8 +1204,10 @@
          */
         destroy: function() {
 
-            // Delete all event handlers
-            delete this.eventHandlers;
+            // Turn off all event handlers
+            for (var eh in this.eventHandlers) {
+                this.off(eh);
+            }
 
             // Remove the drop zone's event handlers
             if (this.$dropZone) {
@@ -1226,7 +1233,9 @@
             delete this.pendingList;
 
             // Remove the DOM elements we created
-            this.$fileInput.remove();
+            if (!this.options.existingInput) {
+                this.$fileInput.remove();
+            }
         },
 
 
