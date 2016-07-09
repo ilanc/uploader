@@ -36,6 +36,11 @@
         defaults: {
 
             /**
+             * Use an existing <input> rather than creating one.
+             */
+            existingInput: null,
+
+            /**
              * The button to launch the file browser dialog.
              * Possible values: a jQuery selector/object or an HTMLElement.
              */

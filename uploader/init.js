@@ -89,12 +89,16 @@
          */
         createFileInput: function() {
 
-            // Create the file input
-            this.$fileInput = $("<input/>", {
-                name: this.options.name,
-                accept: (this.options.acceptType || []).join(),
-                type: "file"
-            }).appendTo(this.$selectButton);
+            if (this.options.existingInput) {
+                this.$fileInput = $(this.options.existingInput);
+            } else {
+                // Create the file input
+                this.$fileInput = $("<input/>", {
+                    name: this.options.name,
+                    accept: (this.options.acceptType || []).join(),
+                    type: "file"
+                }).appendTo(this.$selectButton);
+            }
 
             // Set the multiple attribute
             if (this.options.multiple && this.constructor.support.selectMultiple && this.isModernBrowser) {

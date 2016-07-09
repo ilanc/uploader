@@ -508,8 +508,10 @@
          */
         destroy: function() {
 
-            // Delete all event handlers
-            delete this.eventHandlers;
+            // Turn off all event handlers
+            for (var eh in this.eventHandlers) {
+                this.off(eh);
+            }
 
             // Remove the drop zone's event handlers
             if (this.$dropZone) {
@@ -535,7 +537,9 @@
             delete this.pendingList;
 
             // Remove the DOM elements we created
-            this.$fileInput.remove();
+            if (!this.options.existingInput) {
+                this.$fileInput.remove();
+            }
         },
 
 
