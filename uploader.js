@@ -367,19 +367,21 @@
             // Add the files to the file list.
             this.addToList(files);
 
-            if ( ! this.isModernBrowser) {
+            if (!this.options.existingInput) {
+                if (!this.isModernBrowser) {
 
-                // Detach the file input, but don't remove it (we will need it when submitting the file to the server).
-                this.$fileInput.off().detach();
+                    // Detach the file input, but don't remove it (we will need it when submitting the file to the server).
+                    this.$fileInput.off().detach();
+                }
+                else {
+
+                    // Remove the file input (we got the File objects from it, so we don't need it anymore).
+                    this.$fileInput.remove();
+                }
+
+                // Create new file input element, to make selecting new files possible.
+                this.createFileInput();
             }
-            else {
-
-                // Remove the file input (we got the File objects from it, so we don't need it anymore).
-                this.$fileInput.remove();
-            }
-
-            // Create new file input element, to make selecting new files possible.
-            this.createFileInput();
         },
 
         /**
@@ -758,9 +760,12 @@
                         // Check if the file is valid (whether it's type and size are allowed)
                         this.validateFile(file);
 
-                        // Create a unique id for the file
-                        var uniqueId = this.uniqueId("file");
-                        this.$fileInput.attr("id", uniqueId);
+                        var uniqueId = this.$fileInput.attr("id");
+                        if (!uniqueId) {
+                            // Create a unique id for the file
+                            uniqueId = this.uniqueId("file");
+                            this.$fileInput.attr("id", uniqueId);
+                        }
 
                         // Add the file to the file list
                         this.fileList[uniqueId] = {
@@ -916,6 +921,20 @@
                     this.upload(uniqueId);
                 }
             }
+        },
+
+        /**
+         * Any files to upload?
+         */
+        anyUploadsPending: function () {
+
+            // Get the files from the file list with the status: "ADDED", and upload them one by one
+            for (var uniqueId in this.fileList) {
+                if (this.fileList[uniqueId].status == this.constructor.STATUS_ADDED) {
+                    return true;
+                }
+            }
+            return false;
         },
 
         /**
