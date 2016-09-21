@@ -62,9 +62,12 @@
                         // Check if the file is valid (whether it's type and size are allowed)
                         this.validateFile(file);
 
-                        // Create a unique id for the file
-                        var uniqueId = this.uniqueId("file");
-                        this.$fileInput.attr("id", uniqueId);
+                        var uniqueId = this.$fileInput.attr("id");
+                        if (!uniqueId) {
+                            // Create a unique id for the file
+                            uniqueId = this.uniqueId("file");
+                            this.$fileInput.attr("id", uniqueId);
+                        }
 
                         // Add the file to the file list
                         this.fileList[uniqueId] = {
@@ -220,6 +223,20 @@
                     this.upload(uniqueId);
                 }
             }
+        },
+
+        /**
+         * Any files to upload?
+         */
+        anyUploadsPending: function () {
+
+            // Get the files from the file list with the status: "ADDED", and upload them one by one
+            for (var uniqueId in this.fileList) {
+                if (this.fileList[uniqueId].status == this.constructor.STATUS_ADDED) {
+                    return true;
+                }
+            }
+            return false;
         },
 
         /**

@@ -16,19 +16,21 @@
             // Add the files to the file list.
             this.addToList(files);
 
-            if ( ! this.isModernBrowser) {
+            if (!this.options.existingInput) {
+                if ( ! this.isModernBrowser) {
 
-                // Detach the file input, but don't remove it (we will need it when submitting the file to the server).
-                this.$fileInput.off().detach();
+                    // Detach the file input, but don't remove it (we will need it when submitting the file to the server).
+                    this.$fileInput.off().detach();
+                }
+                else {
+
+                    // Remove the file input (we got the File objects from it, so we don't need it anymore).
+                    this.$fileInput.remove();
+                }
+
+                // Create new file input element, to make selecting new files possible.
+                this.createFileInput();
             }
-            else {
-
-                // Remove the file input (we got the File objects from it, so we don't need it anymore).
-                this.$fileInput.remove();
-            }
-
-            // Create new file input element, to make selecting new files possible.
-            this.createFileInput();
         },
 
         /**
